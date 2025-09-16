@@ -62,12 +62,23 @@ public class ExpenseController {
     }
 
     //study sort
-    @GetMapping
-    public ResponseEntity<Page<Expense>> GetAllExpensesPaged(@RequestBody PageDTO pageDTO) {
-        Sort sort = pageDTO.getSortDir().equalsIgnoreCase("asc") ? Sort.by(pageDTO.getSortBy()).ascending() : Sort.by(pageDTO.getSortBy()).descending();
-        Pageable pageable = PageRequest.of(pageDTO.getPage(), pageDTO.getSize(), sort);
-        Page<Expense> expenses = expenseService.getAllExpenses(pageable);
-        logger.info("Fetched page {} of expenses, size {}", pageDTO.getPage(), pageDTO.getSize());
+    @GetMapping("/expenses/{userId}")
+    public ResponseEntity<Page<Expense>> getAllExpensesPaged(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "date") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Expense> expenses = expenseService.getAllExpenses(userId, pageable);
+
         return ResponseEntity.ok(expenses);
     }
+
+
 }
