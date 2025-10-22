@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface ExpenseRepo extends JpaRepository<Expense, UUID> {
-    Page<Expense> findAllByUserId(UUID userId, Pageable pageable);
+    Page<Expense> findAllByUser_Id(UUID userId, Pageable pageable);
 }
