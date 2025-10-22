@@ -1,5 +1,6 @@
 package com.satvik.financetracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Expense extends BaseModel {
 
     private Double amount;
@@ -27,12 +29,14 @@ public class Expense extends BaseModel {
 
     private String spentWhere;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"expenses", "categories"}) // prevents infinite loop when serializing user
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties({"expenses", "user"}) // prevent recursion
     private Category category;
 
     @PrePersist
@@ -42,16 +46,21 @@ public class Expense extends BaseModel {
 
     @Override
     public String toString() {
+        UUID userId = (user != null) ? user.getId() : null;
+        UUID categoryId = (category != null) ? category.getId() : null;
+
         return "Expense{" +
-                "amount=" + amount +
+                "id=" + getId() +
+                ", amount=" + amount +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", spentWhere='" + spentWhere + '\'' +
-                ", user=" + user +
-                ", category=" + category +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
                 '}';
     }
+
 
     public void setAll(Expense expense) {
         this.amount = expense.getAmount();

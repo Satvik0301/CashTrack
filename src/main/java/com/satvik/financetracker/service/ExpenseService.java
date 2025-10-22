@@ -14,7 +14,7 @@ public interface ExpenseService {
     List<Expense> getAllExpenses();
     Expense EditExpense(Expense expense, UUID id);
     void deleteExpense(UUID id);
-    Page<Expense> getAllExpenses(Pageable pageable);
+    Page<Expense> getAllExpenses(UUID userId ,Pageable pageable);
 
 
 }

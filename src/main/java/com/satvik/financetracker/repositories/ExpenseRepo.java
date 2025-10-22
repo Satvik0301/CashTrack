@@ -1,6 +1,8 @@
 package com.satvik.financetracker.repositories;
 
 import com.satvik.financetracker.models.Expense;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,4 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface ExpenseRepo extends JpaRepository<Expense, UUID> {
+    Page<Expense> findAllByUser_Id(UUID userId, Pageable pageable);
 }

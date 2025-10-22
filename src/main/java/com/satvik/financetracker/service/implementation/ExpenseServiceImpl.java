@@ -58,8 +58,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Page<Expense> getAllExpenses(Pageable pageable) {
-        Page<Expense> expenses = expenseRepo.findAll(pageable);
+    public Page<Expense> getAllExpenses(UUID userId,Pageable pageable) {
+        Page<Expense> expenses = expenseRepo.findAllByUser_Id(userId, pageable);
         logger.info("Expense retrieved from database");
         return expenses;
     }
