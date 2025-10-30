@@ -20,7 +20,9 @@ public class UserServiceImpl implements UserService {
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public User saveUser(User user) {
+    public User saveUser(User user) throws IllegalArgumentException {
+        User user1 = userRepo.findByUsername(user.getUsername()).orElse(null);
+        if (user1 != null) throw new IllegalArgumentException("User already exists");
         User save = userRepo.save(user);
         logger.info("User saved: " + user.getUsername());
         return save;
