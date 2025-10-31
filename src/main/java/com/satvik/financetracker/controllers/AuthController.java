@@ -35,54 +35,35 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userReq) {
-        try {
-            // map DTO -> Entity
-            User user = new User();
-            user.setName(userReq.getName());
-            user.setAge(userReq.getAge() == null ? 0 : userReq.getAge());
-            user.setUsername(userReq.getUsername());
-            user.setPassword(passwordEncoder.encode(userReq.getPassword()));
-            user.setSavings(userReq.getSavings());
-            user.setSalary(userReq.getSalary());
-            user.setEmail(userReq.getEmail());
+        // map DTO -> Entity
+        User user = new User();
+        user.setName(userReq.getName());
+        user.setAge(userReq.getAge() == null ? 0 : userReq.getAge());
+        user.setUsername(userReq.getUsername());
+        user.setPassword(passwordEncoder.encode(userReq.getPassword()));
+        user.setSavings(userReq.getSavings());
+        user.setSalary(userReq.getSalary());
+        user.setEmail(userReq.getEmail());
 
-            // save
-            User saved = userService.saveUser(user);
+        // save
+        User saved = userService.saveUser(user);
 
-            // map Entity -> Response DTO
-            UserResponse resp = UserResponse.builder()
-                    .id(saved.getId())
-                    .name(saved.getName())
-                    .age(saved.getAge())
-                    .username(saved.getUsername())
-                    .savings(saved.getSavings())
-                    .salary(saved.getSalary())
-                    .email(saved.getEmail())
-                    .expenseCount(saved.getExpenses() == null ? 0 : saved.getExpenses().size())
-                    .categoryCount(saved.getCategories() == null ? 0 : saved.getCategories().size())
-                    .build();
+        // map Entity -> Response DTO
+        UserResponse resp = UserResponse.builder()
+                .id(saved.getId())
+                .name(saved.getName())
+                .age(saved.getAge())
+                .username(saved.getUsername())
+                .savings(saved.getSavings())
+                .salary(saved.getSalary())
+                .email(saved.getEmail())
+                .expenseCount(saved.getExpenses() == null ? 0 : saved.getExpenses().size())
+                .categoryCount(saved.getCategories() == null ? 0 : saved.getCategories().size())
+                .build();
 
-            return new ResponseEntity<>(resp, HttpStatus.CREATED);
-
-        } catch (IllegalArgumentException ex) {
-            // Handle duplicate user or other IllegalArgumentException
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "status", HttpStatus.BAD_REQUEST.value(),
-                            "error", "Bad Request",
-                            "message", ex.getMessage()
-                    ));
-        } catch (Exception ex) {
-            // Catch unexpected errors
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of(
-                            "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "error", "Internal Server Error",
-                            "message", ex.getMessage()
-                    ));
-        }
+        return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 
 }
+
+
