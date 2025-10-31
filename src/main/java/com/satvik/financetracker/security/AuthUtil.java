@@ -1,6 +1,7 @@
 package com.satvik.financetracker.security;
 
 import com.satvik.financetracker.models.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -29,5 +30,15 @@ public class AuthUtil {
                 .expiration(new Date(System.currentTimeMillis() + 1000*60*10))
                 .signWith(secretKey())
                 .compact();
+    }
+
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getSubject();
     }
 }
